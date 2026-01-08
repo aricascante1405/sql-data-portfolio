@@ -1,0 +1,17 @@
+/*
+Top 3 of ordered categories 
+*/
+
+WITH UnitsOnOrderByCategory AS (
+    SELECT
+        c.CategoryName AS Category,
+        SUM(p.UnitsOnOrder) AS TotalUnitsOnOrder
+    FROM Categories c
+    JOIN Products p ON p.CategoryID = c.CategoryID
+    GROUP BY c.CategoryName
+)
+SELECT TOP 3
+    Category,
+    TotalUnitsOnOrder
+FROM UnitsOnOrderByCategory
+ORDER BY TotalUnitsOnOrder DESC;
