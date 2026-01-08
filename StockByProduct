@@ -1,0 +1,24 @@
+/*
+Objective:
+Identify products with potential overstock by comparing inventory levels against products ordered.
+
+Skills implemented:
+- CTE
+- Inventory Analysis Logic
+*/
+
+WITH StockByProduct AS (
+    SELECT
+        p.ProductName AS Product,
+        p.UnitsInStock AS ProductsInStock,
+        p.UnitsOnOrder AS ProductsOnOrder
+    FROM Products p
+)
+SELECT
+    Product,
+    ProductsInStock,
+    ProductsOnOrder,
+    (ProductsInStock - ProductsOnOrder) AS OverstockProducts
+FROM StockByProduct
+WHERE ProductsInStock > ProductsOnOrder
+ORDER BY OverstockProducts DESC;
