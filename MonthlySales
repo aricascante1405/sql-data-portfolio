@@ -1,0 +1,32 @@
+/*
+Objective:
+Calculate total sales in USD for each company, grouped by year and month.
+
+Skills implemented:
+- JOINs to extract data from three different tables
+- Date functions: YEAR, MONTH
+- Aggregations: SUM
+- CTE (Common Table Expression) for query organization
+*/
+
+WITH MonthlySales AS (
+    SELECT 
+        c.CompanyName,
+        YEAR(o.OrderDate) AS OrderYear,
+        MONTH(o.OrderDate) AS OrderMonth,
+        SUM(od.UnitPrice * od.Quantity) AS TotalSales
+    FROM Customers c
+    JOIN Orders o ON c.CustomerID = o.CustomerID
+    JOIN [Order Details] od ON o.OrderID = od.OrderID
+    GROUP BY 
+        c.CompanyName,
+        YEAR(o.OrderDate),
+        MONTH(o.OrderDate)
+)
+SELECT 
+    CompanyName,
+    OrderYear,
+    OrderMonth,
+    FORMAT(TotalSales, 'C', 'en-US') AS TotalSales_USD
+FROM MonthlySales
+ORDER BY CompanyName, OrderYear, OrderMonth;
