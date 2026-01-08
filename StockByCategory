@@ -1,0 +1,27 @@
+/*
+Objective:
+Identify product categories with potential overstock by comparing inventory levels against units on order.
+
+Skills implemented:
+- JOINs
+- Aggregations (SUM)
+- CTE
+*/
+
+WITH StockByCategory AS (
+    SELECT
+        c.CategoryName AS Category,
+        SUM(p.UnitsInStock) AS TotalUnitsInStock,
+        SUM(p.UnitsOnOrder) AS TotalUnitsOnOrder
+    FROM Categories c
+    JOIN Products p ON p.CategoryID = c.CategoryID
+    GROUP BY c.CategoryName
+)
+SELECT
+    Category,
+    TotalUnitsInStock,
+    TotalUnitsOnOrder,
+    (TotalUnitsInStock - TotalUnitsOnOrder) AS OverstockUnits
+FROM StockByCategory
+WHERE TotalUnitsInStock > TotalUnitsOnOrder
+ORDER BY OverstockUnits DESC;
